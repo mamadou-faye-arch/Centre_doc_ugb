@@ -1,18 +1,35 @@
-import dao.UtilisateurDAO;
-import modele.Etudiant;
+import dao.DocumentDAO;
+import modele.Document;
+import modele.UFR;
+import modele.TypeDocument;
+import modele.NiveauAcces;
 import exception.ChampInvalideException;
 
 public class TestConnexion {
     public static void main(String[] args) {
-        UtilisateurDAO dao = new UtilisateurDAO();
+        DocumentDAO dao = new DocumentDAO();
 
         try {
-            
-            Etudiant etudiant = new Etudiant(0, "Diop", "Awa", "awa.diop@ugb.edu.sn", "ETU2026001");
+            UFR ufr = new UFR(1, "UFR Sciences Appliquees et Technologie");
 
-            
-            dao.ajouter(etudiant);
-            System.out.println("Etudiant ajoute avec succes !");
+            Document document = new Document(
+                0,
+                "Etude des systemes distribues",
+                "Awa Diop",
+                "Pr. Mamadou Faye",
+                2026,
+                TypeDocument.MEMOIRE,
+                ufr,
+                "Informatique",
+                "Ce memoire etudie les systemes distribues modernes.",
+                "/documents/memoire_awa.pdf",
+                NiveauAcces.TELECHARGEABLE
+            );
+
+            dao.ajouter(document);
+            System.out.println("Document ajoute avec succes !");
+
+            dao.rechercherParTitre("systemes");
 
         } catch (ChampInvalideException e) {
             System.out.println("Champ invalide : " + e.getMessage());
