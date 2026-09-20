@@ -4,6 +4,8 @@ import modele.UFR;
 import modele.TypeDocument;
 import modele.NiveauAcces;
 import exception.ChampInvalideException;
+import modele.Gestionnaire;
+import dao.UtilisateurDAO;
 
 public class TestConnexion {
     public static void main(String[] args) {
@@ -36,5 +38,14 @@ public class TestConnexion {
         } catch (Exception e) {
             System.out.println("Exception : " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
+        try {
+    UtilisateurDAO daoUtilisateur = new UtilisateurDAO();
+    UFR ufr = new UFR(1, "UFR Sciences Appliquées et Technologie");
+    Gestionnaire gest = new Gestionnaire(0, "Faye", "Mamadou", "mamadou.faye@ugb.edu.sn", ufr);
+    daoUtilisateur.ajouter(gest);
+    System.out.println("Gestionnaire ajoute avec succes !");
+} catch (Exception ex) {
+    System.out.println("Erreur : " + ex.getMessage());
+}
     }
 }

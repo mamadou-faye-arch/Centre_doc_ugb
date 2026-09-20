@@ -7,6 +7,7 @@ import modele.Gestionnaire;
 import java.sql.*;
 import exception.AuthentificationException;
 import exception.ChampInvalideException;
+import modele.UFR;
 
 
 public class UtilisateurDAO {
@@ -94,6 +95,31 @@ public class UtilisateurDAO {
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
             return new Etudiant(rs.getInt("id_utilisateur"), nom, prenom, email, codeEtudiant);
+        } else {
+            throw new AuthentificationException("Identifiants incorrects.");
+        }
+    } catch (SQLException ex) {
+        throw new AuthentificationException("Erreur de connexion : " + ex.getMessage());
+    } catch (ChampInvalideException ex) {
+        throw new AuthentificationException("Données invalides : " + ex.getMessage());
+    }
+}
+public Gestionnaire authentifierGestionnaire(String email) throws AuthentificationException {
+    String sql = "SELECT * FROM utilisateurs WHERE email=?";
+    try (Connection conn = ConnexionBD.getConnexion();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, email);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            int idUfr = rs.getInt("id_ufr");
+            UFR ufr = new UFR(idUfr, "");  // à adapter si UFR a besoin du nom aussi
+            return new Gestionnaire(
+                rs.getInt("id_utilisateur"),
+                rs.getString("nom"),
+                rs.getString("prenom"),
+                email,
+                ufr
+            );
         } else {
             throw new AuthentificationException("Identifiants incorrects.");
         }

@@ -6,6 +6,7 @@ import java.awt.*;
 import dao.UtilisateurDAO;
 import exception.AuthentificationException;
 import modele.Etudiant;
+import modele.Gestionnaire;
 
 public class FenetreConnexion extends JFrame {
 
@@ -140,6 +141,9 @@ public class FenetreConnexion extends JFrame {
                 champEmail.getText(), champCodeEtudiant.getText()
             );
             JOptionPane.showMessageDialog(this, "Bienvenue " + etu.getPrenom() + " !");
+        } else {
+            Gestionnaire gest = dao.authentifierGestionnaire(champEmail.getText());
+            JOptionPane.showMessageDialog(this, "Bienvenue " + gest.getPrenom() + " !");
         }
     } catch (AuthentificationException ex) {
         JOptionPane.showMessageDialog(this, ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
