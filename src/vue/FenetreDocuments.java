@@ -1,6 +1,7 @@
 package vue;
 
 import dao.DocumentDAO;
+import exception.AccesRefuseException;
 import modele.Document;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,6 +15,8 @@ public class FenetreDocuments extends JFrame {
     private JButton boutonRechercher;
     private JTable tableDocuments;
     private DefaultTableModel modeleTable;
+    private JButton boutonConsulter;
+    private List<Document> derniersResultats;
 
     public FenetreDocuments() {
         super("Centre de Documentation UGB - Recherche de documents");
@@ -46,6 +49,11 @@ public class FenetreDocuments extends JFrame {
         add(panelHaut, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
+        boutonConsulter = new JButton("Consulter le document selectionne");
+        add(boutonConsulter, BorderLayout.SOUTH);
+        boutonConsulter.addActionListener(e -> consulterDocumentSelectionne());
+    
+
         boutonRechercher.addActionListener(e -> rechercher());
 
         rechercher();
@@ -58,6 +66,7 @@ public class FenetreDocuments extends JFrame {
         try {
             DocumentDAO dao = new DocumentDAO();
             List<Document> resultats = dao.rechercherDocuments(motCle);
+            derniersResultats = resultats;
 
             if (resultats.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Aucun document trouve.");
@@ -75,6 +84,21 @@ public class FenetreDocuments extends JFrame {
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private void consulterDocumentSelectionne() {
+        int ligne = tableDocuments.getSelectedRow();
+        if (ligne == -1) {
+            JOptionPane.showMessageDialog(this, "Selectionnez d'abord un document dans la liste.");
+            return ;
+        }
+        Document doc = derniersResultats.get(ligne);
+        try {
+             new DocumentDAO().verifierAcces(doc);
+             JOptionPane.showMessageDialog(this, "Acces autorise ! Ouverture de : " + doc.getCheminPdf());
+            
+        } catch (AccesRefuseException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Acces refuse", JOptionPane.WARNING_MESSAGE);
         }
     }
 }

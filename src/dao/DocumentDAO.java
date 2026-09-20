@@ -9,6 +9,7 @@ import modele.NiveauAcces;
 import exception.ChampInvalideException;
 import java.util.List;
 import java.util.ArrayList;
+import exception.AccesRefuseException;
 
 
 public class DocumentDAO {
@@ -100,5 +101,17 @@ public class DocumentDAO {
         }
     }
     return resultats;
+}
+public void verifierAcces(Document document) throws AccesRefuseException {
+    switch (document.getNiveauAcces()) {
+        case RESTREINT:
+            throw new AccesRefuseException("Acces refuse : ce document est reserve (niveau RESTREINT).");
+        case CONSULTATION_SEULE:
+            throw new AccesRefuseException("Consultation seule : le telechargement n'est pas autorise pour cedocument .");
+        case TELECHARGEABLE:
+            break;
+
+    }
+
 }
 }
