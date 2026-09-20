@@ -5,6 +5,9 @@ import exception.DoublonException;
 import modele.Etudiant;
 import modele.Gestionnaire;
 import java.sql.*;
+import exception.AuthentificationException;
+import exception.ChampInvalideException;
+
 
 public class UtilisateurDAO {
 
@@ -79,4 +82,26 @@ public class UtilisateurDAO {
             }
         }
     }
+    public Etudiant authentifierEtudiant(String nom, String prenom, String email, String codeEtudiant) 
+        throws AuthentificationException {
+    String sql = "SELECT * FROM utilisateurs WHERE nom=? AND prenom=? AND email=? AND code_etudiant=?";
+    try (Connection conn = ConnexionBD.getConnexion();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, nom);
+        stmt.setString(2, prenom);
+        stmt.setString(3, email);
+        stmt.setString(4, codeEtudiant);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return new Etudiant(rs.getInt("id_utilisateur"), nom, prenom, email, codeEtudiant);
+        } else {
+            throw new AuthentificationException("Identifiants incorrects.");
+        }
+    } catch (SQLException ex) {
+        throw new AuthentificationException("Erreur de connexion : " + ex.getMessage());
+    } catch (ChampInvalideException ex) {
+        throw new AuthentificationException("Données invalides : " + ex.getMessage());
+    }
+}
+
 }

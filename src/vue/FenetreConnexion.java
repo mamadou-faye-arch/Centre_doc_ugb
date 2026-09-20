@@ -3,6 +3,9 @@ package vue;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import dao.UtilisateurDAO;
+import exception.AuthentificationException;
+import modele.Etudiant;
 
 public class FenetreConnexion extends JFrame {
 
@@ -128,9 +131,20 @@ public class FenetreConnexion extends JFrame {
 
         boutonEtudiant.addActionListener(e -> appliquerRole("ETUDIANT"));
         boutonGestion.addActionListener(e -> appliquerRole("GESTION"));
-        boutonValider.addActionListener(e ->
-            JOptionPane.showMessageDialog(this, "Connexion (" + roleActuel + ") à venir")
-        );
+        boutonValider.addActionListener(e -> {
+    try {
+        UtilisateurDAO dao = new UtilisateurDAO();
+        if (roleActuel.equals("ETUDIANT")) {
+            Etudiant etu = dao.authentifierEtudiant(
+                champNom.getText(), champPrenom.getText(),
+                champEmail.getText(), champCodeEtudiant.getText()
+            );
+            JOptionPane.showMessageDialog(this, "Bienvenue " + etu.getPrenom() + " !");
+        }
+    } catch (AuthentificationException ex) {
+        JOptionPane.showMessageDialog(this, ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+    }
+});
 
         return formulaire;
     }
