@@ -141,6 +141,8 @@ public class FenetreConnexion extends JFrame {
                 champEmail.getText(), champCodeEtudiant.getText()
             );
             JOptionPane.showMessageDialog(this, "Bienvenue " + etu.getPrenom() + " !");
+            new FenetreDocuments().setVisible(true);
+            this.dispose();
         } else {
             Gestionnaire gest = dao.authentifierGestionnaire(champEmail.getText());
             JOptionPane.showMessageDialog(this, "Bienvenue " + gest.getPrenom() + " !");
