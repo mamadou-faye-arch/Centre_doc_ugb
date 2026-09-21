@@ -47,5 +47,27 @@ public class TestConnexion {
 } catch (Exception ex) {
     System.out.println("Erreur : " + ex.getMessage());
 }
+    
+    try {
+        DocumentDAO daoDoc2 = new DocumentDAO();
+        UFR ufrTest2 = new UFR(1,"UFR Sciences Appliquees et Technologie");
+        Document docRestreint = new Document(
+            0,
+            "Recherche confidentielle sur la securite reseau",
+            "Awa Diop",
+            "Pr.Mamadou Faye",
+            2026,
+            TypeDocument.MEMOIRE,
+            ufrTest2,
+            "Informatique",
+            "Document a acces restreint pour test.",
+            "/documents/memoire_restreint.pdf",
+            NiveauAcces.RESTREINT
+        );
+        daoDoc2.ajouter(docRestreint);
+        System.out.println("Document restreint ajoute avec succes !");
+    } catch (Exception ex) {
+        System.out.println("Erreur : " + ex.getMessage());
     }
+}
 }
